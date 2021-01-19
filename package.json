@@ -4,7 +4,7 @@
   "description": "INT20H technical test",
   "main": "index.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest || echo \"no tests as for now, we will add it for sure!\""
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
     "int20h",
     "hackaton"
   ],
-  "author": "Quercus Insolita team",
+  "author": "Quercus Insolita team (Andrew Pavlenko <paavlenko.andrew@gmail.com>, Olha Yakymovych, Danylo Petrakivskyi",
   "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/quercus-insolita/hircum-triticum/issues"
