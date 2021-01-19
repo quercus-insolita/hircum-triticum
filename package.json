@@ -1,0 +1,23 @@
+{
+  "name": "hircum-triticum",
+  "version": "0.0.0",
+  "description": "INT20H technical test",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quercus-insolita/hircum-triticum.git"
+  },
+  "keywords": [
+    "int20h",
+    "hackaton"
+  ],
+  "author": "Quercus Insolita team",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/quercus-insolita/hircum-triticum/issues"
+  },
+  "homepage": "https://github.com/quercus-insolita/hircum-triticum#readme"
+}
