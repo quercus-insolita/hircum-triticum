@@ -1,15 +1,20 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 )
 
 func main() {
+	port := flag.Int("port", 9427, "Application's HTTP server port")
+	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetReportCaller(true)
-	if err := http.ListenAndServe(":9427", http.HandlerFunc(handle)); err != nil {
+	err := http.ListenAndServe(":"+strconv.Itoa(*port), http.HandlerFunc(handle))
+	if err != nil {
 		log.Fatalf("main: failed to start server, %v", err)
 	}
 }
