@@ -1,0 +1,8 @@
+.lets
+.idea
+.dockerignore
+README.md
+LICENSE
+lets.yaml
+node_modules
+bin
