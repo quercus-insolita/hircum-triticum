@@ -3,7 +3,7 @@ FROM golang:1.15.3-alpine AS base
 WORKDIR /go/src/app
 
 ENV GOOS "linux"
-ENV GOARCH "arm32v7"
+ENV GOARCH "arm"
 ENV CGO_ENABLED 0
 
 COPY go.mod .
