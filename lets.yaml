@@ -15,7 +15,7 @@ commands:
       HIRCUM_TRITICUM_ENV: prd
       HIRCUM_TRITICUM_PORT: 80
     cmd: |
-      docker-compose build parser && \
+      docker-compose build --no-cache parser && \
       docker-compose down && \
       docker-compose up -d parser && \
       docker image prune -f
