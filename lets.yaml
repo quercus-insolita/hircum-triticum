@@ -1,8 +1,21 @@
 shell: bash
+env:
+  HIRCUM_TRITICUM_ENV: dev
+  HIRCUM_TRITICUM_PORT: '9427'
 commands:
-  install:
-    description: Install required go dependencies
-    cmd: go get ./...
-  compile:
-    description: Build go binaries
-    cmd: mkdir -p bin && go build -o bin/parser cmd/parser/main.go
+  build:
+    description: Compiles all docker images for local development
+    cmd: docker-compose build parser
+  parser:
+    description: Up site parser service
+    cmd: docker-compose up parser
+  prd:
+    description: Compile all images and release containers into production
+    env:
+      HIRCUM_TRITICUM_ENV: prd
+      HIRCUM_TRITICUM_PORT: 80
+    cmd: |
+      docker-compose build parser && \
+      docker-compose down && \
+      docker-compose up -d parser && \
+      docker image prune -f
