@@ -1,7 +1,4 @@
 shell: bash
-env:
-  HIRCUM_TRITICUM_ENV: dev
-  HIRCUM_TRITICUM_PORT: '9427'
 commands:
   build:
     description: Compiles all docker images for local development
