@@ -9,6 +9,7 @@ ENV CGO_ENABLED 0
 COPY go.mod .
 COPY go.sum .
 COPY cmd cmd
+COPY internal internal
 
 RUN adduser -D -g "" parser && \
     apk add --no-cache git && \
