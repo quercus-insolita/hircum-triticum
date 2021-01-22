@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  parser:
+    build:
+      context: .
+      dockerfile: docker/prd/parser.dockerfile
+    image: hircum-triticum-parser
+    container_name: hircum-triticum-parser
+    command: -port 29115
+    ports:
+      - 29115:29115
+networks:
+  default:
+    name: hircum-triticum-default
