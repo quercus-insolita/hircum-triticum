@@ -3,12 +3,12 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"github.com/quercus-insolita/hircum-triticum/internal/parsing"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -25,27 +25,30 @@ func main() {
 	name := flag.String(
 		"parser",
 		names[0],
-		fmt.Sprintf("Underlying data source, one of %v", names),
+		"Underlying data source, one of \""+strings.Join(names, "\", \"")+"\"",
 	)
 	port := flag.Int("port", 9427, "Application's HTTP server port")
+	isLog := flag.Bool("log", false, "Should the app output logs to a file")
 	flag.Parse()
 	parser, ok := parsers[*name]
 	if !ok {
 		log.Fatalf("main: failed to find parser %s among %v", *name, names)
 	}
-	file, err := os.OpenFile(
-		"logs/parser-"+*name+".log",
-		os.O_WRONLY|os.O_CREATE|os.O_APPEND,
-		0644,
-	)
-	if err != nil {
-		log.Fatalf("main: failed to open a log file, %v", err)
+	if *isLog {
+		file, err := os.OpenFile(
+			"logs/parser-"+*name+".log",
+			os.O_WRONLY|os.O_CREATE|os.O_APPEND,
+			0644,
+		)
+		if err != nil {
+			log.Fatalf("main: failed to open a log file, %v", err)
+		}
+		defer func() {
+			_ = file.Close()
+		}()
+		log.SetOutput(file)
 	}
-	defer func() {
-		_ = file.Close()
-	}()
-	log.SetOutput(file)
-	if err = http.ListenAndServe(":"+strconv.Itoa(*port), handle(parser)); err != nil {
+	if err := http.ListenAndServe(":"+strconv.Itoa(*port), handle(parser)); err != nil {
 		log.Fatalf("main: failed to start server, %v", err)
 	}
 }
