@@ -1,8 +1,9 @@
 package parsing
 
 import (
+	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/html"
 	"net/http"
 	"time"
 )
@@ -21,8 +22,9 @@ func (p *aquamarketParser) ParseBuckwheats() ([]Buckwheat, error) {
 		return nil, err
 	}
 	buckwheats := make([]Buckwheat, 0)
-	for _, node := range document.Find("div.product:not(.product-not-available)").Nodes {
-		if buckwheat, err := p.parseBuckwheat(node); err != nil {
+	selection := document.Find("div.product:not(.product-not-available)")
+	for i := range selection.Nodes {
+		if buckwheat, err := p.parseBuckwheat(selection.Eq(i)); err != nil {
 			log.WithField("url", buckwheat.URL).Error(err)
 		} else {
 			buckwheats = append(buckwheats, buckwheat)
@@ -31,6 +33,28 @@ func (p *aquamarketParser) ParseBuckwheats() ([]Buckwheat, error) {
 	return buckwheats, nil
 }
 
-func (p *aquamarketParser) parseBuckwheat(node *html.Node) (Buckwheat, error) {
-	return Buckwheat{}, nil
+func (p *aquamarketParser) parseBuckwheat(selection *goquery.Selection) (Buckwheat, error) {
+	var (
+		buckwheat Buckwheat
+		err       error
+	)
+	nodes := selection.Find("a.product-name").Nodes
+	if len(nodes) != 1 {
+		return buckwheat, fmt.Errorf("parsing: parser found no url node")
+	}
+	for _, attribute := range nodes[0].Attr {
+		if attribute.Key == "href" {
+			buckwheat.URL = attribute.Val
+		} else if attribute.Key == "title" {
+			buckwheat.Title = attribute.Val
+		}
+	}
+	if buckwheat.URL == "" {
+		return buckwheat, fmt.Errorf("parsing: parser found no url")
+	}
+	buckwheat.URL = "https://aquamarket.ua" + buckwheat.URL
+	if buckwheat.Title == "" {
+		return buckwheat, fmt.Errorf("parsing: parser found no title")
+	}
+	return buckwheat, nil
 }
