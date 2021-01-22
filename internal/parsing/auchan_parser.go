@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func NewAuchanHandler() Parser {
+func NewAuchanParser() Parser {
 	return &auchanParser{&http.Client{Timeout: time.Second * 10}}
 }
 
