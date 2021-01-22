@@ -11,13 +11,12 @@ import (
 	"time"
 )
 
-func NewAuchanHandler(logger log.FieldLogger) Parser {
-	return &auchanParser{&http.Client{Timeout: time.Second * 10}, logger}
+func NewAuchanHandler() Parser {
+	return &auchanParser{&http.Client{Timeout: time.Second * 10}}
 }
 
 type auchanParser struct {
 	client *http.Client
-	logger log.FieldLogger
 }
 
 func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
@@ -48,7 +47,7 @@ func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
 	buckwheats := make([]Buckwheat, 0)
 	for _, node := range document.Find("a.product-tile").Nodes {
 		if buckwheat, err := p.parseBuckwheat(node); err != nil {
-			p.logger.WithField("url", buckwheat.URL).Error(err)
+			log.WithField("url", buckwheat.URL).Error(err)
 		} else {
 			buckwheats = append(buckwheats, buckwheat)
 		}
