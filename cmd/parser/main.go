@@ -1,8 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
-	"fmt"
+	"github.com/quercus-insolita/hircum-triticum/internal/parsing"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
@@ -13,15 +14,28 @@ func main() {
 	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetReportCaller(true)
-	err := http.ListenAndServe(":"+strconv.Itoa(*port), http.HandlerFunc(handle))
+	entry := log.WithField("parser", "auchan")
+	err := http.ListenAndServe(
+		":"+strconv.Itoa(*port),
+		handle(parsing.NewAuchanHandler(entry), entry),
+	)
 	if err != nil {
 		log.Fatalf("main: failed to start server, %v", err)
 	}
 }
 
-func handle(writer http.ResponseWriter, _ *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-	if _, err := fmt.Fprint(writer, `{"message": "Hello from parser!"}`); err != nil {
-		log.Errorf("main: failed to handle, %v", err)
-	}
+func handle(parser parsing.Parser, logger log.FieldLogger) http.Handler {
+	return http.HandlerFunc(
+		func(writer http.ResponseWriter, _ *http.Request) {
+			writer.Header().Set("Content-Type", "application/json")
+			buckwheats, err := parser.ParseBuckwheats()
+			if err != nil {
+				buckwheats = make([]parsing.Buckwheat, 0)
+				logger.Error(err)
+			}
+			if err := json.NewEncoder(writer).Encode(buckwheats); err != nil {
+				logger.Errorf("main: failed to handle, %v", err)
+			}
+		},
+	)
 }

@@ -3,12 +3,12 @@ services:
   parser:
     build:
       context: .
-      dockerfile: docker/${HIRCUM_TRITICUM_ENV}/parser.dockerfile
+      dockerfile: docker/prd/parser.dockerfile
     image: hircum-triticum-parser
     container_name: hircum-triticum-parser
-    command: -port $HIRCUM_TRITICUM_PORT
+    command: -port 29115
     ports:
-      - ${HIRCUM_TRITICUM_PORT}:${HIRCUM_TRITICUM_PORT}
+      - 29115:29115
 networks:
   default:
     name: hircum-triticum-default
