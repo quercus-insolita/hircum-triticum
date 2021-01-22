@@ -15,7 +15,8 @@ RUN adduser -D -g "" parser && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \
     apk update && \
-    apk add --no-cache git && \
+    apk add --no-cache git ca-certificates && \
+    update-ca-certificates && \
     go get ./... && \
     mkdir -p bin && \
     go build -o bin/parser cmd/parser/main.go
@@ -24,6 +25,7 @@ RUN adduser -D -g "" parser && \
 FROM scratch
 
 COPY --from=base /etc/passwd /etc/passwd
+COPY --from=base /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=base /go/src/app/bin/parser /bin/parser
 
 USER parser
