@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/quercus-insolita/hircum-triticum/internal/parsing"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -11,11 +12,32 @@ import (
 )
 
 func main() {
-	port := flag.Int("port", 9427, "Application's HTTP server port")
-	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetReportCaller(true)
-	file, err := os.OpenFile("logs/parser-auchan.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	parsers := map[string]parsing.Parser{
+		"auchan":     parsing.NewAuchanParser(),
+		"aquamarket": parsing.MewAquamarketParser(),
+	}
+	names := make([]string, 0, len(parsers))
+	for name := range parsers {
+		names = append(names, name)
+	}
+	name := flag.String(
+		"parser",
+		names[0],
+		fmt.Sprintf("Underlying data source, one of %v", names),
+	)
+	port := flag.Int("port", 9427, "Application's HTTP server port")
+	flag.Parse()
+	parser, ok := parsers[*name]
+	if !ok {
+		log.Fatalf("main: failed to find parser %s among %v", *name, names)
+	}
+	file, err := os.OpenFile(
+		"logs/parser-"+*name+".log",
+		os.O_WRONLY|os.O_CREATE|os.O_APPEND,
+		0644,
+	)
 	if err != nil {
 		log.Fatalf("main: failed to open a log file, %v", err)
 	}
@@ -23,27 +45,22 @@ func main() {
 		_ = file.Close()
 	}()
 	log.SetOutput(file)
-	entry := log.WithField("parser", "auchan")
-	err = http.ListenAndServe(
-		":"+strconv.Itoa(*port),
-		handle(parsing.NewAuchanHandler(entry), entry),
-	)
-	if err != nil {
+	if err = http.ListenAndServe(":"+strconv.Itoa(*port), handle(parser)); err != nil {
 		log.Fatalf("main: failed to start server, %v", err)
 	}
 }
 
-func handle(parser parsing.Parser, logger log.FieldLogger) http.Handler {
+func handle(parser parsing.Parser) http.Handler {
 	return http.HandlerFunc(
 		func(writer http.ResponseWriter, _ *http.Request) {
 			writer.Header().Set("Content-Type", "application/json")
 			buckwheats, err := parser.ParseBuckwheats()
 			if err != nil {
 				buckwheats = make([]parsing.Buckwheat, 0)
-				logger.Error(err)
+				log.Error(err)
 			}
 			if err := json.NewEncoder(writer).Encode(buckwheats); err != nil {
-				logger.Errorf("main: failed to handle, %v", err)
+				log.Errorf("main: failed to handle, %v", err)
 			}
 		},
 	)
