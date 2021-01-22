@@ -4,51 +4,31 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/html"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func NewAuchanHandler(logger log.FieldLogger) Parser {
-	return &auchanParser{&http.Client{Timeout: time.Second * 10}, logger}
+func NewAuchanParser() Parser {
+	return &auchanParser{&helper{&http.Client{Timeout: time.Second * 10}}}
 }
 
 type auchanParser struct {
-	client *http.Client
-	logger log.FieldLogger
+	helper *helper
 }
 
 func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
-	request, err := http.NewRequest(
-		http.MethodGet,
+	document, err := p.helper.readDocument(
 		"https://auchan.zakaz.ua/uk/categories/buckwheat-auchan/",
-		nil,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("parsing: parser failed to make a request, %v", err)
+		return nil, err
 	}
-	response, err := p.client.Do(request)
-	if err != nil {
-		return nil, fmt.Errorf("parsing: parser failed to send a request, %v", err)
-	}
-	if response.StatusCode != http.StatusOK {
-		_ = response.Body.Close()
-		return nil, fmt.Errorf("parsing: parser failed with status %s", response.Status)
-	}
-	document, err := goquery.NewDocumentFromReader(response.Body)
-	if err != nil {
-		_ = response.Body.Close()
-		return nil, fmt.Errorf("parsing: parser failed to read a document, %v", err)
-	}
-	if err := response.Body.Close(); err != nil {
-		return nil, fmt.Errorf("parsing: parser failed to close a response body, %v", err)
-	}
-	buckwheats := make([]Buckwheat, 0)
-	for _, node := range document.Find("a.product-tile").Nodes {
-		if buckwheat, err := p.parseBuckwheat(node); err != nil {
-			p.logger.WithField("url", buckwheat.URL).Error(err)
+	buckwheats, selection := make([]Buckwheat, 0), document.Find("a.product-tile")
+	for i := range selection.Nodes {
+		if buckwheat, err := p.parseBuckwheat(selection.Eq(i)); err != nil {
+			log.WithField("url", buckwheat.URL).Error(err)
 		} else {
 			buckwheats = append(buckwheats, buckwheat)
 		}
@@ -56,12 +36,12 @@ func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
 	return buckwheats, nil
 }
 
-func (p *auchanParser) parseBuckwheat(node *html.Node) (Buckwheat, error) {
+func (p *auchanParser) parseBuckwheat(selection *goquery.Selection) (Buckwheat, error) {
 	var (
 		buckwheat Buckwheat
 		err       error
 	)
-	for _, attribute := range node.Attr {
+	for _, attribute := range selection.Nodes[0].Attr {
 		if attribute.Key == "href" {
 			buckwheat.URL = attribute.Val
 		} else if attribute.Key == "title" {
@@ -75,9 +55,8 @@ func (p *auchanParser) parseBuckwheat(node *html.Node) (Buckwheat, error) {
 	if buckwheat.Title == "" {
 		return buckwheat, fmt.Errorf("parsing: parser found no title")
 	}
-	document := goquery.NewDocumentFromNode(node)
 	buckwheat.Price, err = strconv.ParseFloat(
-		document.Find("span.Price__value_caption").Text(),
+		selection.Find("span.Price__value_caption").Text(),
 		64,
 	)
 	if err != nil {
@@ -86,7 +65,7 @@ func (p *auchanParser) parseBuckwheat(node *html.Node) (Buckwheat, error) {
 	if buckwheat.Price <= 0 {
 		return buckwheat, fmt.Errorf("parsing: parser found non-positive price")
 	}
-	words := strings.Split(document.Find("div.product-tile__weight").Text(), " ")
+	words := strings.Split(selection.Find("div.product-tile__weight").Text(), " ")
 	if len(words) < 2 || len(words) > 3 {
 		return buckwheat, fmt.Errorf("parsing: parser failed to split price literal")
 	}
