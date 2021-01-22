@@ -12,6 +12,9 @@ COPY cmd cmd
 COPY internal internal
 
 RUN adduser -D -g "" parser && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf /tmp/* && \
+    apk update && \
     apk add --no-cache git && \
     go get ./... && \
     go build -o parser cmd/parser/main.go
