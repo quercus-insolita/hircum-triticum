@@ -1,20 +1,34 @@
 version: '3.8'
+x-parser: &x-parser
+  image: hircum-triticum-parser
+  entrypoint: go run github.com/quercus-insolita/hircum-triticum/cmd/parser
+  volumes:
+    - ./go.mod:/go/src/app/go.mod
+    - ./go.sum:/go/src/app/go.sum
+    - ./cmd:/go/src/app/cmd
+    - ./internal:/go/src/app/internal
+    - ./logs:/go/src/app/logs
 services:
   parser:
+    <<: *x-parser
     build:
       context: .
       dockerfile: docker/dev/parser.dockerfile
-    image: hircum-triticum-parser
     container_name: hircum-triticum-parser
-    command: go run github.com/quercus-insolita/hircum-triticum/cmd/parser
     ports:
       - 9427:9427
-    volumes:
-      - ./go.mod:/go/src/app/go.mod
-      - ./go.sum:/go/src/app/go.sum
-      - ./cmd:/go/src/app/cmd
-      - ./internal:/go/src/app/internal
-      - ./logs:/go/src/app/logs
+  parser-auchan:
+    <<: *x-parser
+    container_name: hircum-triticum-parser-auchan
+    command: -parser auchan -port 9428
+    ports:
+      - 9428:9428
+  parser-aquamarket:
+    <<: *x-parser
+    container_name: hircum-triticum-parser-aquamarket
+    command: -parser aquamarket -port 9429
+    ports:
+      - 9429:9429
 networks:
   default:
     name: hircum-triticum-default
