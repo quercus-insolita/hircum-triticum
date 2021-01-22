@@ -5,10 +5,11 @@ commands:
     cmd: mkdir -p logs && docker-compose -f docker-compose-dev.yml build parser
   parser:
     description: Up site parser service
-    cmd: docker-compose -f docker-compose-dev.yml up parser
+    cmd: |
+      docker-compose -f docker-compose-dev.yml up parser
+      docker-compose -f docker-compose-dev.yml down
   run:
     description: Activate the whole service ecosystem
-    cmd: docker-compose -f docker-compose-dev.yml up -d parser-auchan parser-aquamarket
-  stop:
-    description: Dispose all docker stuff
-    cmd: docker-compose -f docker-compose-dev.yml down
+    cmd: |
+      docker-compose -f docker-compose-dev.yml upparser-auchan parser-aquamarket
+      docker-compose -f docker-compose-dev.yml down
