@@ -1,16 +1,26 @@
 version: '3.8'
+x-parser: &x-parser
+  image: hircum-triticum-parser
+  volumes:
+    - ./logs:/logs
 services:
   parser:
     build:
       context: .
       dockerfile: docker/prd/parser.dockerfile
     image: hircum-triticum-parser
-    container_name: hircum-triticum-parser
-    command: -port 29115
+  parser-auchan:
+    <<: *x-parser
+    container_name: hircum-triticum-parser-auchan
+    command: -parser auchan -port 29116 -log
     ports:
-      - 29115:29115
-    volumes:
-      - ./logs:/logs
+      - 29116:29116
+  parser-aquamarket:
+    <<: *x-parser
+    container_name: hircum-triticum-parser-aquamarket
+    command: -parser aquamarket -port 29117 -log
+    ports:
+      - 29117:29117
 networks:
   default:
     name: hircum-triticum-default
