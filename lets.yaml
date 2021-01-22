@@ -2,7 +2,10 @@ shell: bash
 commands:
   build:
     description: Compiles all docker images for local development
-    cmd: docker-compose build parser
+    cmd: docker-compose -f docker-compose-dev.yml build parser
   parser:
     description: Up site parser service
-    cmd: docker-compose up parser
+    cmd: docker-compose -f docker-compose-dev.yml up parser
+  stop:
+    description: Dispose all docker stuff
+    cmd: docker-compose -f docker-compose-dev.yml down
