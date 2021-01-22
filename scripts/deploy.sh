@@ -1,3 +1,3 @@
 #!/bin/bash
 
-git pull origin master && bash workflow.sh
+git pull origin master && bash scripts/workflow.sh
