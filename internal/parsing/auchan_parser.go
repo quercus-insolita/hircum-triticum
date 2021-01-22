@@ -12,37 +12,19 @@ import (
 )
 
 func NewAuchanParser() Parser {
-	return &auchanParser{&http.Client{Timeout: time.Second * 10}}
+	return &auchanParser{&helper{&http.Client{Timeout: time.Second * 10}}}
 }
 
 type auchanParser struct {
-	client *http.Client
+	helper *helper
 }
 
 func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
-	request, err := http.NewRequest(
-		http.MethodGet,
+	document, err := p.helper.readDocument(
 		"https://auchan.zakaz.ua/uk/categories/buckwheat-auchan/",
-		nil,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("parsing: parser failed to make a request, %v", err)
-	}
-	response, err := p.client.Do(request)
-	if err != nil {
-		return nil, fmt.Errorf("parsing: parser failed to send a request, %v", err)
-	}
-	if response.StatusCode != http.StatusOK {
-		_ = response.Body.Close()
-		return nil, fmt.Errorf("parsing: parser failed with status %s", response.Status)
-	}
-	document, err := goquery.NewDocumentFromReader(response.Body)
-	if err != nil {
-		_ = response.Body.Close()
-		return nil, fmt.Errorf("parsing: parser failed to read a document, %v", err)
-	}
-	if err := response.Body.Close(); err != nil {
-		return nil, fmt.Errorf("parsing: parser failed to close a response body, %v", err)
+		return nil, err
 	}
 	buckwheats := make([]Buckwheat, 0)
 	for _, node := range document.Find("a.product-tile").Nodes {

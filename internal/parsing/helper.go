@@ -10,7 +10,7 @@ type helper struct {
 	client *http.Client
 }
 
-func (h *helper) parseDocument(url string) (*goquery.Document, error) {
+func (h *helper) readDocument(url string) (*goquery.Document, error) {
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("parsing: helper failed to make a request, %v", err)
