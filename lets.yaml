@@ -5,7 +5,7 @@ commands:
     cmd: docker-compose -f docker-compose-dev.yml build parser
   parser:
     description: Up site parser service
-    cmd: docker-compose -f docker-compose-dev.yml up parser
+    cmd: mkdir -p logs && docker-compose -f docker-compose-dev.yml up -d parser
   stop:
     description: Dispose all docker stuff
     cmd: docker-compose -f docker-compose-dev.yml down
