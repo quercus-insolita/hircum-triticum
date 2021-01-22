@@ -6,6 +6,7 @@ import (
 	"github.com/quercus-insolita/hircum-triticum/internal/parsing"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -14,8 +15,16 @@ func main() {
 	flag.Parse()
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetReportCaller(true)
+	file, err := os.OpenFile("logs/parser-auchan.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatalf("main: failed to open a log file, %v", err)
+	}
+	defer func() {
+		_ = file.Close()
+	}()
+	log.SetOutput(file)
 	entry := log.WithField("parser", "auchan")
-	err := http.ListenAndServe(
+	err = http.ListenAndServe(
 		":"+strconv.Itoa(*port),
 		handle(parsing.NewAuchanHandler(entry), entry),
 	)
