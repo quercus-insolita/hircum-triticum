@@ -17,14 +17,15 @@ RUN adduser -D -g "" parser && \
     apk update && \
     apk add --no-cache git && \
     go get ./... && \
-    go build -o parser cmd/parser/main.go
+    mkdir -p bin && \
+    go build -o bin/parser cmd/parser/main.go
 
 
 FROM scratch
 
 COPY --from=base /etc/passwd /etc/passwd
-COPY --from=base /go/src/app/parser /
+COPY --from=base /go/src/app/bin/parser /bin/parser
 
 USER parser
 
-ENTRYPOINT ["/parser"]
+ENTRYPOINT ["/bin/parser"]
