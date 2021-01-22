@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/html"
 	"net/http"
 	"strconv"
 	"strings"
@@ -26,9 +25,9 @@ func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
 	if err != nil {
 		return nil, err
 	}
-	buckwheats := make([]Buckwheat, 0)
-	for _, node := range document.Find("a.product-tile").Nodes {
-		if buckwheat, err := p.parseBuckwheat(node); err != nil {
+	buckwheats, selection := make([]Buckwheat, 0), document.Find("a.product-tile")
+	for i := range selection.Nodes {
+		if buckwheat, err := p.parseBuckwheat(selection.Eq(i)); err != nil {
 			log.WithField("url", buckwheat.URL).Error(err)
 		} else {
 			buckwheats = append(buckwheats, buckwheat)
@@ -37,12 +36,12 @@ func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
 	return buckwheats, nil
 }
 
-func (p *auchanParser) parseBuckwheat(node *html.Node) (Buckwheat, error) {
+func (p *auchanParser) parseBuckwheat(selection *goquery.Selection) (Buckwheat, error) {
 	var (
 		buckwheat Buckwheat
 		err       error
 	)
-	for _, attribute := range node.Attr {
+	for _, attribute := range selection.Nodes[0].Attr {
 		if attribute.Key == "href" {
 			buckwheat.URL = attribute.Val
 		} else if attribute.Key == "title" {
@@ -56,9 +55,8 @@ func (p *auchanParser) parseBuckwheat(node *html.Node) (Buckwheat, error) {
 	if buckwheat.Title == "" {
 		return buckwheat, fmt.Errorf("parsing: parser found no title")
 	}
-	document := goquery.NewDocumentFromNode(node)
 	buckwheat.Price, err = strconv.ParseFloat(
-		document.Find("span.Price__value_caption").Text(),
+		selection.Find("span.Price__value_caption").Text(),
 		64,
 	)
 	if err != nil {
@@ -67,7 +65,7 @@ func (p *auchanParser) parseBuckwheat(node *html.Node) (Buckwheat, error) {
 	if buckwheat.Price <= 0 {
 		return buckwheat, fmt.Errorf("parsing: parser found non-positive price")
 	}
-	words := strings.Split(document.Find("div.product-tile__weight").Text(), " ")
+	words := strings.Split(selection.Find("div.product-tile__weight").Text(), " ")
 	if len(words) < 2 || len(words) > 3 {
 		return buckwheat, fmt.Errorf("parsing: parser failed to split price literal")
 	}
