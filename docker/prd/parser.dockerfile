@@ -15,7 +15,7 @@ RUN adduser -D -g "" parser && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \
     apk update && \
-    apk add --no-cache git ca-certificates && \
+    apk add --no-cache git=2.30.0-r0 ca-certificates=20161130-r0 && \
     update-ca-certificates && \
     go get ./... && \
     mkdir -p bin && \
