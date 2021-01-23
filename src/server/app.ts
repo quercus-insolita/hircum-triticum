@@ -15,7 +15,6 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('static'))
 
-// injecting app context to `req`
 app.use((req, _res, next) => {
   Object.assign(req, createAppContext())
   next()
