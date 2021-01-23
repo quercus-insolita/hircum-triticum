@@ -11,5 +11,5 @@ commands:
   run:
     description: Activate the whole service ecosystem
     cmd: |
-      docker-compose -f docker-compose-dev.yml up parser-auchan parser-aquamarket
+      docker-compose -f docker-compose-dev.yml up parser-auchan parser-aquamarket parser-fozzy
       docker-compose -f docker-compose-dev.yml down
