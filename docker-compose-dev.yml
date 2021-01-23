@@ -33,7 +33,7 @@ services:
   parser-fozzy:
     <<: *x-parser
     container_name: hircum-triticum-parser-fozzy
-    command: -parser aquamarket -port 29118
+    command: -parser fozzy -port 29118
     ports:
       - 29118:29118
 networks:
