@@ -40,7 +40,6 @@ services:
     image: hircum-triticum-api
     volumes:
       - ./package.json:/app/package.json
-      - ./.npmrc:/app/.npmrc
       - ./tsconfig.json:/app/tsconfig.json
       - ./src:/app/src
     build:
