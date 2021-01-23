@@ -44,15 +44,13 @@ func (p *aquamarketParser) parseBuckwheat(selection *goquery.Selection) (Buckwhe
 		buckwheat Buckwheat
 		err       error
 	)
-	nodes := selection.Find("a.product-name").Nodes
-	if len(nodes) != 1 {
-		return buckwheat, fmt.Errorf("parsing: parser found no url node")
-	}
-	for _, attribute := range nodes[0].Attr {
-		if attribute.Key == "href" {
-			buckwheat.URL = attribute.Val
-		} else if attribute.Key == "title" {
-			buckwheat.Title = attribute.Val
+	for _, node := range selection.Find("a.product-name[href][title]").Nodes {
+		for _, attribute := range node.Attr {
+			if attribute.Key == "href" {
+				buckwheat.URL = attribute.Val
+			} else if attribute.Key == "title" {
+				buckwheat.Title = attribute.Val
+			}
 		}
 	}
 	if buckwheat.URL == "" {
@@ -61,14 +59,22 @@ func (p *aquamarketParser) parseBuckwheat(selection *goquery.Selection) (Buckwhe
 	if buckwheat.Title == "" {
 		return buckwheat, fmt.Errorf("parsing: parser found no title")
 	}
-	nodes = selection.Find("span.price.product-price[content]").Nodes
-	if len(nodes) != 1 {
-		return buckwheat, fmt.Errorf("parsing: parser found no price node")
+	for _, node := range selection.Find("div.thumb-list img[data-src]").Nodes {
+		for _, attribute := range node.Attr {
+			if attribute.Key == "data-src" {
+				buckwheat.ImageURL = attribute.Val
+			}
+		}
+	}
+	if buckwheat.ImageURL == "" {
+		return buckwheat, fmt.Errorf("parsing: parser found no image url")
 	}
 	var price string
-	for _, attribute := range nodes[0].Attr {
-		if attribute.Key == "content" {
-			price = attribute.Val
+	for _, node := range selection.Find("span.price.product-price[content]").Nodes {
+		for _, attribute := range node.Attr {
+			if attribute.Key == "content" {
+				price = attribute.Val
+			}
 		}
 	}
 	buckwheat.Price, err = strconv.ParseFloat(price, 64)

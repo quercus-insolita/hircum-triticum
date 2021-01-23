@@ -55,6 +55,16 @@ func (p *auchanParser) parseBuckwheat(selection *goquery.Selection) (Buckwheat, 
 	if buckwheat.Title == "" {
 		return buckwheat, fmt.Errorf("parsing: parser found no title")
 	}
+	for _, node := range selection.Find("img.product-tile__image-i").Nodes {
+		for _, attribute := range node.Attr {
+			if attribute.Key == "src" {
+				buckwheat.ImageURL = attribute.Val
+			}
+		}
+	}
+	if buckwheat.ImageURL == "" {
+		return buckwheat, fmt.Errorf("parsing: parser found no image url")
+	}
 	buckwheat.Price, err = strconv.ParseFloat(
 		selection.Find("span.Price__value_caption").Text(),
 		64,
