@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: docker/dev/parser.dockerfile
     container_name: hircum-triticum-parser
-    command: -parser aquamarket
+    command: -parser
     ports:
       - 9427:9427
   parser-auchan:
