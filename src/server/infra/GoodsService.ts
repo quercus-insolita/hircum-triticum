@@ -23,7 +23,7 @@ export class GoodsService {
 
     private transformIncomingGoodDataToOutcoming(incomingData: IncomingGoodData): OutcomingGoodData {
         const { price, mass } = incomingData
-        const pricePerKg = mass ? price / mass : null // to hrn/kg from hrn/g
+        const pricePerKg = mass ? price / mass : null
 
         return {
             ...incomingData,
