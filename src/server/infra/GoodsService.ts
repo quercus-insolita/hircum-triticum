@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash';
 
-import { IncomingGoodData, OutcomingGoodData, GoodDataField } from '../domain';
+import { IncomingGood, OutcomingGood, GoodDataField } from '../domain';
 import { GoodsRawDataAggregator } from './GoodsRawDataAggregator';
 
 type GetAllParams = {
@@ -14,14 +14,14 @@ export class GoodsService {
     constructor(private rawDataAggregator: GoodsRawDataAggregator) {}
 
     async getAll({ sortByFields = 'pricePerKg' }: GetAllParams) {
-        const allGoodsRaw = await this.rawDataAggregator.getGoodsData()
+        const allGoodsRaw = await this.rawDataAggregator.getGoods()
         const allGoodsTransformed = allGoodsRaw.map(this.transformIncomingGoodDataToOutcoming)
         
         const sortByFieldsArray = Array.isArray(sortByFields) ? sortByFields : [sortByFields]
         return sortBy(allGoodsTransformed, sortByFieldsArray)
     }
 
-    private transformIncomingGoodDataToOutcoming(incomingData: IncomingGoodData): OutcomingGoodData {
+    private transformIncomingGoodDataToOutcoming(incomingData: IncomingGood): OutcomingGood {
         const { price, mass } = incomingData
         const pricePerKg = mass ? price / mass : null
 

@@ -1,14 +1,14 @@
 import fetch from 'node-fetch'
 
 import { GOODS_DATA_SOURCE_TIMEOUT } from '../constants'
-import { IncomingGoodData } from '../domain'
+import { IncomingGood } from '../domain'
 
-type GoodsDataSourceResponse = IncomingGoodData[]
+type GoodsDataSourceResponse = IncomingGood[]
 
 export class GoodsRawDataAggregator {
     constructor(private readonly sourceUrls: readonly string[]) {}
 
-    async getGoodsData(): Promise<IncomingGoodData[]> {
+    async getGoods(): Promise<IncomingGood[]> {
         const responses = await Promise.all(
             this.sourceUrls.map(this.getSourceResponseOrErrorMessage)
         )
