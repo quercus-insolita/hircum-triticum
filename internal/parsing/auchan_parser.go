@@ -55,13 +55,11 @@ func (p *auchanParser) parseBuckwheat(selection *goquery.Selection) (Buckwheat, 
 	if buckwheat.Title == "" {
 		return buckwheat, fmt.Errorf("parsing: parser found no title")
 	}
-	nodes := selection.Find("img.product-tile__image-i").Nodes
-	if len(nodes) != 1 {
-		return buckwheat, fmt.Errorf("parsing: parser found no image url node")
-	}
-	for _, attribute := range nodes[0].Attr {
-		if attribute.Key == "src" {
-			buckwheat.ImageURL = attribute.Val
+	for _, node := range selection.Find("img.product-tile__image-i").Nodes {
+		for _, attribute := range node.Attr {
+			if attribute.Key == "src" {
+				buckwheat.ImageURL = attribute.Val
+			}
 		}
 	}
 	if buckwheat.ImageURL == "" {
