@@ -4,7 +4,7 @@ export const GOODS_DATA_SOURCE_URLS = [
     'http://hircum-triticum-parser-fozzy:29118/'
 ] as const
 
-export const GOODS_DATA_SOURCE_TIMEOUT = 5000
+export const GOODS_DATA_SOURCE_TIMEOUT = 10000
 
 export const APP_PORT = 29115
 
