@@ -5,7 +5,7 @@ import { GoodsRawDataAggregator } from './GoodsRawDataAggregator';
 
 type GetAllParams = {
     // TODO: sortOrder: 'asc' | 'desc'
-    sortByFields?: GoodDataField | GoodDataField[]
+    sortByFields: GoodDataField | GoodDataField[]
     // TODO: includeFields?: GoodDataField | GoodDataField[] | '*'
     // TODO: excludeFields?: GoodDataField | GoodDataField[] | '*'
 }
@@ -13,12 +13,14 @@ type GetAllParams = {
 export class GoodsService {
     constructor(private rawDataAggregator: GoodsRawDataAggregator) {}
 
-    async getAll({ sortByFields = 'pricePerKg' }: GetAllParams): Promise<OutcomingGood[]> {
-        const allGoodsRaw = await this.rawDataAggregator.getGoods()
-        const allGoodsTransformed = allGoodsRaw.map(this.transformIncomingGoodToInternal)
+    async getAll({ sortByFields }: GetAllParams): Promise<OutcomingGood[]> {
+        const allGoodsIncoming = await this.rawDataAggregator.getGoods()
+        const allGoodsInternal = allGoodsIncoming.map(this.transformIncomingGoodToInternal)
         
         const sortByFieldsArray = Array.isArray(sortByFields) ? sortByFields : [sortByFields]
-        return sortBy(allGoodsTransformed, sortByFieldsArray)
+        const allGoodsSorted = sortBy(allGoodsInternal, sortByFieldsArray)
+
+        return allGoodsSorted.map(this.transformInternalGoodToOutcoming)
     }
 
     private transformIncomingGoodToInternal(incomingData: IncomingGood): InternalGood {
@@ -29,5 +31,10 @@ export class GoodsService {
             ...incomingData,
             pricePerKg
         }
+    }
+
+    private transformInternalGoodToOutcoming(internalGood: InternalGood): OutcomingGood {
+        const { pricePerKg, ...outcomingGood } = internalGood
+        return outcomingGood
     }
 }
