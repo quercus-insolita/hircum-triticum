@@ -23,7 +23,7 @@ services:
     container_name: hircum-triticum-parser-auchan
     command: -parser auchan -port 29115
     ports:
-      - 29115:29115
+      - 29116:29116
   parser-aquamarket:
     <<: *x-parser
     container_name: hircum-triticum-parser-aquamarket
