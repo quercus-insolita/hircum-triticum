@@ -40,8 +40,8 @@ services:
     volumes:
       - ./package.json:/app/package.json
       - ./tsconfig.json:/app/tsconfig.json
+      - ./logs:/app/logs
       - ./src:/app/src
-      - ./logs:/logs
     build:
       context: .
       dockerfile: docker/dev/api.dockerfile
