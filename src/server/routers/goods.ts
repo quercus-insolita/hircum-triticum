@@ -16,7 +16,7 @@ const router = express.Router()
 router.get<
     never, any, never, ListAllRequestQueryParams
 >('/listAll', async (req, res) => {
-    const { sortBy: sortByFields } = req.query
+    const { sortBy: sortByFields = 'pricePerKg' } = req.query
     // TODO: add validation for query params
     const offset = Number(req.query.offset || '0')
     const limit = req.query.limit ? Number(req.query.limit) : null 

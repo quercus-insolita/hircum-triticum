@@ -1,11 +1,11 @@
 import { sortBy } from 'lodash';
 
-import { IncomingGood, OutcomingGood, GoodDataField } from '../domain';
+import { IncomingGood, OutcomingGood, GoodDataField, InternalGood } from '../domain';
 import { GoodsRawDataAggregator } from './GoodsRawDataAggregator';
 
 type GetAllParams = {
     // TODO: sortOrder: 'asc' | 'desc'
-    sortByFields?: GoodDataField | GoodDataField[]
+    sortByFields: GoodDataField | GoodDataField[]
     // TODO: includeFields?: GoodDataField | GoodDataField[] | '*'
     // TODO: excludeFields?: GoodDataField | GoodDataField[] | '*'
 }
@@ -13,15 +13,17 @@ type GetAllParams = {
 export class GoodsService {
     constructor(private rawDataAggregator: GoodsRawDataAggregator) {}
 
-    async getAll({ sortByFields = 'pricePerKg' }: GetAllParams) {
-        const allGoodsRaw = await this.rawDataAggregator.getGoods()
-        const allGoodsTransformed = allGoodsRaw.map(this.transformIncomingGoodDataToOutcoming)
+    async getAll({ sortByFields }: GetAllParams): Promise<OutcomingGood[]> {
+        const allGoodsIncoming = await this.rawDataAggregator.getGoods()
+        const allGoodsInternal = allGoodsIncoming.map(this.transformIncomingGoodToInternal)
         
         const sortByFieldsArray = Array.isArray(sortByFields) ? sortByFields : [sortByFields]
-        return sortBy(allGoodsTransformed, sortByFieldsArray)
+        const allGoodsSorted = sortBy(allGoodsInternal, sortByFieldsArray)
+
+        return allGoodsSorted.map(this.transformInternalGoodToOutcoming)
     }
 
-    private transformIncomingGoodDataToOutcoming(incomingData: IncomingGood): OutcomingGood {
+    private transformIncomingGoodToInternal(incomingData: IncomingGood): InternalGood {
         const { price, mass } = incomingData
         const pricePerKg = price / mass
 
@@ -29,5 +31,10 @@ export class GoodsService {
             ...incomingData,
             pricePerKg
         }
+    }
+
+    private transformInternalGoodToOutcoming(internalGood: InternalGood): OutcomingGood {
+        const { pricePerKg, ...outcomingGood } = internalGood
+        return outcomingGood
     }
 }
