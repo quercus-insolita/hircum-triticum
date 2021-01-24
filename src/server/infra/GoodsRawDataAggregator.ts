@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import type { Response as FetchResponse } from 'node-fetch'
 
 import { GOODS_DATA_SOURCE_TIMEOUT } from '../constants'
 import { IncomingGood } from '../domain'
@@ -28,15 +29,25 @@ export class GoodsRawDataAggregator {
     private async getSourceResponseOrErrorMessage(
         sourceUrl: string
     ): Promise<GoodsDataSourceResponse | string> {
-        // TODO: catch timeout failures
-        const response = await fetch(sourceUrl, { timeout: GOODS_DATA_SOURCE_TIMEOUT })
-        if (response.ok) {
-            return response.json()
+        let response: FetchResponse
+        let errorMessage: string
+
+        try {
+            response = await fetch(sourceUrl, { timeout: GOODS_DATA_SOURCE_TIMEOUT })
+            if (response.ok) {
+                return response.json()
+            }
+
+            const { status, statusText } = response
+            const rawResponseText = await response.text()
+
+            errorMessage = `Goods data source under ${sourceUrl} responded with ${status} ${statusText}. `
+                + `Raw response (probably, error message): ${rawResponseText}`
+        } catch (error) {
+            errorMessage = `Request to goods data source under ${sourceUrl} failed. `
+                + `Original error: ${error}`
         }
 
-        const { status, statusText } = response
-        const rawResponseText = await response.text()
-        return `Request to ${sourceUrl} failed: ${status} ${statusText}. `
-            + `Raw response (probably, error message): ${rawResponseText}`
+        return errorMessage
     }
 }
