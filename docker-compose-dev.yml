@@ -36,6 +36,19 @@ services:
     command: -parser fozzy -port 29118
     ports:
       - 29118:29118
+  api:
+    image: hircum-triticum-api
+    volumes:
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./src:/app/src
+    build:
+      context: .
+      dockerfile: docker/dev/api.dockerfile
+    command: npm start
+    container_name: hircum-triticum-api
+    ports:
+      - 29115:29115
 networks:
   default:
     name: hircum-triticum-default
