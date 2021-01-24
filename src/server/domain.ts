@@ -6,8 +6,9 @@ export type IncomingGood = {
     imageUrl: string
 }
 
-export type OutcomingGood = IncomingGood & {
+export type InternalGood = IncomingGood & {
     pricePerKg: number
 }
+export type GoodDataField = keyof InternalGood
 
-export type GoodDataField = keyof OutcomingGood
+export type OutcomingGood = IncomingGood
