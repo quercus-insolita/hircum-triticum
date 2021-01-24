@@ -21,6 +21,12 @@ services:
     command: -parser aquamarket -port 29117 -log
     ports:
       - 29117:29117
+  parser-fozzy:
+    <<: *x-parser
+    container_name: hircum-triticum-parser-fozzy
+    command: -parser fozzy -port 29118 -log
+    ports:
+      - 29118:29118
 networks:
   default:
     name: hircum-triticum-default

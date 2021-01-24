@@ -17,6 +17,7 @@ func main() {
 	parsers := map[string]parsing.Parser{
 		"auchan":     parsing.NewAuchanParser(),
 		"aquamarket": parsing.MewAquamarketParser(),
+		"fozzy":      parsing.NewFozzyParser(),
 	}
 	names := make([]string, 0, len(parsers))
 	for name := range parsers {

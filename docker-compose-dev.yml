@@ -15,20 +15,27 @@ services:
       context: .
       dockerfile: docker/dev/parser.dockerfile
     container_name: hircum-triticum-parser
+    command: -parser fozzy
     ports:
       - 9427:9427
   parser-auchan:
     <<: *x-parser
     container_name: hircum-triticum-parser-auchan
-    command: -parser auchan -port 9428
+    command: -parser auchan -port 29115
     ports:
-      - 9428:9428
+      - 29115:29115
   parser-aquamarket:
     <<: *x-parser
     container_name: hircum-triticum-parser-aquamarket
-    command: -parser aquamarket -port 9429
+    command: -parser aquamarket -port 29117
     ports:
-      - 9429:9429
+      - 29117:29117
+  parser-fozzy:
+    <<: *x-parser
+    container_name: hircum-triticum-parser-fozzy
+    command: -parser fozzy -port 29118
+    ports:
+      - 29118:29118
 networks:
   default:
     name: hircum-triticum-default
