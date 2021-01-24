@@ -23,11 +23,11 @@ export class GoodsService {
 
     private transformIncomingGoodDataToOutcoming(incomingData: IncomingGood): OutcomingGood {
         const { price, mass } = incomingData
-        const pricePerKg = mass ? price / mass : null
+        const pricePerKg = price / mass
 
         return {
             ...incomingData,
-            ...(pricePerKg === null ? {} : { pricePerKg })
+            pricePerKg
         }
     }
 }
