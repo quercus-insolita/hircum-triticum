@@ -14,7 +14,7 @@ services:
     container_name: hircum-triticum-parser-auchan
     command: -parser auchan -port 29115 -log
     ports:
-      - 29115:29115
+      - 29116:29116
   parser-aquamarket:
     <<: *x-parser
     container_name: hircum-triticum-parser-aquamarket
@@ -27,6 +27,17 @@ services:
     command: -parser fozzy -port 29118 -log
     ports:
       - 29118:29118
+  api:
+    build:
+      context: .
+      dockerfile: docker/prd/api.dockerfile
+    image: hircum-triticum-api
+    container_name: hircum-triticum-api
+    command: npm start
+    ports:
+      - 29115:29115
+    volumes:
+      - ./logs:/logs
 networks:
   default:
     name: hircum-triticum-default
