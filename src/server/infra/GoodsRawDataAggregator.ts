@@ -2,6 +2,7 @@ import fetch from 'node-fetch'
 
 import { GOODS_DATA_SOURCE_TIMEOUT } from '../constants'
 import { IncomingGood } from '../domain'
+import { logger } from '../infra/logger'
 
 type GoodsDataSourceResponse = IncomingGood[]
 
@@ -13,8 +14,9 @@ export class GoodsRawDataAggregator {
             this.sourceUrls.map(this.getSourceResponseOrErrorMessage)
         )
         return responses.reduce<GoodsDataSourceResponse>((acc, response) => {
-            if (typeof response === 'string') { // filtering out failed requests
-                console.error(response)
+            // filtering out failed requests where the response is error message
+            if (typeof response === 'string') {
+                logger.error(response)
             } else {
                 acc.push(...response)
             }

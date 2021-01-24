@@ -30,7 +30,8 @@
     "express": "^4.17.1",
     "lodash": "^4.17.20",
     "node-fetch": "^2.6.1",
-    "qs": "^6.9.6"
+    "qs": "^6.9.6",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.9",
