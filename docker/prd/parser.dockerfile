@@ -11,7 +11,8 @@ COPY go.sum .
 COPY cmd cmd
 COPY internal internal
 
-RUN adduser -D -g "" parser && \
+RUN set -xe && \
+    adduser -D -g "" parser && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \
     apk update && \
