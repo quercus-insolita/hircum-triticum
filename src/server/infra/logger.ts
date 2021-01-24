@@ -24,7 +24,11 @@ const logger = createLogger({
     format: fileLogsFormat,
     transports: [
         new transports.File({ filename: COMBINED_LOGS_FILE_PATH })
-    ]
+    ],
+    exceptionHandlers: [
+        new transports.File({ filename: COMBINED_LOGS_FILE_PATH })
+    ],
+    exitOnError: false
 })
 if (process.env.NODE_ENV !== 'production') {
     logger.add(new transports.Console({ format: consoleLogsFormat }))
