@@ -4,6 +4,8 @@
   "description": "INT20H technical test",
   "main": "index.ts",
   "scripts": {
+    "compose:dev:build": "docker-compose -f docker-compose-dev.yml build",
+    "compose:dev:up": "docker-compose -f docker-compose-dev.yml up",
     "build:server": "tsc",
     "watch:server": "tsc --watch",
     "clean:build": "rm -rf dist",
