@@ -3,32 +3,52 @@ import type { Response as FetchResponse } from 'node-fetch'
 
 import { GOODS_DATA_SOURCE_TIMEOUT } from '../constants'
 import { IncomingGood } from '../domain'
-import { logger } from '../infra/logger'
+import { createLogger, Logger } from '../infra/logger'
 
-type GoodsDataSourceResponse = IncomingGood[]
+type GoodsDataSourceSuccessResponse = IncomingGood[]
+
+type GoodsBySourceRecord = {
+    success: true,
+    data: IncomingGood[]
+} | {
+    success: false,
+    errorMessage: string
+}
+type GetGoodsBySourceReturnType = Record<string, GoodsBySourceRecord>
 
 export class GoodsRawDataAggregator {
+    private readonly logger: Logger = createLogger({
+        tenantId: 'goods-raw-data-aggregator'
+    })
+    
     constructor(private readonly sourceUrls: readonly string[]) {}
-
-    async getGoods(): Promise<IncomingGood[]> {
+    
+    async getGoodsBySources(): Promise<GetGoodsBySourceReturnType> {
         const responses = await Promise.all(
             this.sourceUrls.map(this.getSourceResponseOrErrorMessage)
         )
-        return responses.reduce<GoodsDataSourceResponse>((acc, response) => {
-            // filtering out failed requests where the response is error message
+        return responses.reduce<GetGoodsBySourceReturnType>((acc, response, index) => {
+            let currentSourceGoodsRecord: GoodsBySourceRecord
             if (typeof response === 'string') {
-                logger.error(response)
+                currentSourceGoodsRecord = {
+                    success: false,
+                    errorMessage: response
+                }
             } else {
-                acc.push(...response)
+                currentSourceGoodsRecord = {
+                    success: true,
+                    data: response
+                }
             }
 
+            acc[this.sourceUrls[index]] = currentSourceGoodsRecord
             return acc
-        }, [])
+        }, {})
     }
 
     private async getSourceResponseOrErrorMessage(
         sourceUrl: string
-    ): Promise<GoodsDataSourceResponse | string> {
+    ): Promise<GoodsDataSourceSuccessResponse | string> {
         let response: FetchResponse
         let errorMessage: string
 

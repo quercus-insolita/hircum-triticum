@@ -11,3 +11,4 @@ export const APP_PORT = 29115
 export const COMBINED_LOGS_FILE_PATH = 'logs/api.log'
 
 export const POLLING_INTERVAL = 30000
+export const POLLING_DELTA = 100

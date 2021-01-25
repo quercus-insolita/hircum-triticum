@@ -1,30 +1,42 @@
-import { InternalGood } from '../domain'
+import { IncomingGood } from '../domain'
+import { createLogger, Logger } from '../infra/logger'
 
-type SourceRecord = {
+type SourceRecord<TGood> = {
     readonly lastUpdate: Date
-    readonly goods: InternalGood[]
+    readonly goods: TGood[]
 }
 
-export class InMemoryGoodsRepository {
-    private readonly goodsBySourceDict: Record<string, SourceRecord> = {}
+export class InMemoryGoodsRepository<TGood = IncomingGood> {
+    private readonly logger: Logger = createLogger({
+        tenantId: 'polling-manager'
+    })
+    private readonly goodsBySourceDict: Record<string, SourceRecord<TGood>> = {}
     private lastUpdate: Date | null = null // the last time this.createOrUpdate or this.bulkCreateOrUpdate was called
 
-    getLatest(): Record<string, InternalGood[]>
-    getLatest(sourceId: string): InternalGood[]
-    getLatest(sourceId?: string): InternalGood[] | Record<string, InternalGood[]> {
+    getLatestFlattened(): TGood[] {
+        return Object.values(this.goodsBySourceDict).reduce<TGood[]>(
+            (acc, { goods }) => [...acc, ...goods],
+            []
+        )
+    }
+
+    getLatest(): Record<string, TGood[]>
+    getLatest(sourceId: string): TGood[]
+    getLatest(sourceId?: string): TGood[] | Record<string, TGood[]> {
         if (sourceId !== undefined) {
             return this.goodsBySourceDict[sourceId].goods
         }
 
-        return Object.entries(this.goodsBySourceDict).reduce<
-            Record<string, InternalGood[]>
-        >((acc, [key, value]) => {
-            acc[key] = value.goods
-            return acc
-        }, {})
+        return Object.entries(this.goodsBySourceDict).reduce<Record<string, TGood[]>>(
+            (acc, [sourceId, { goods }]) => ({
+                ...acc,
+                [sourceId]: goods
+            }),
+            {}
+        )
     }
 
-    createOrUpdate(sourceId: string, goods: InternalGood[]): Date {
+    createOrUpdate(sourceId: string, goods: TGood[]): Date {
         this.goodsBySourceDict[sourceId] = {
             goods,
             lastUpdate: new Date()
@@ -34,7 +46,7 @@ export class InMemoryGoodsRepository {
         return this.lastUpdate
     }
 
-    bulkCreateOrUpdate(data: Record<string, InternalGood[]>): Date {
+    bulkCreateOrUpdate(data: Record<string, TGood[]>): Date {
         const currentTime = new Date()
         Object.entries(data).forEach(([sourceId, goods]) => {
             this.goodsBySourceDict[sourceId] = {

@@ -1,6 +1,7 @@
 import express from 'express'
 
 import { GoodDataField } from '../domain'
+import { createLogger, Logger } from '../infra/logger'
 
 // TODO: `string` in lieu of `GoodDataField`, add validation and then convert to `GoodDataField`
 type ListAllRequestQueryParams = {
@@ -16,12 +17,17 @@ const router = express.Router()
 router.get<
     never, any, never, ListAllRequestQueryParams
 >('/listAll', async (req, res) => {
+    const logger: Logger = createLogger({
+        tenantId: '/goods router'
+    })
+    logger.info('received request', { url: req.originalUrl })
+
     const { sortBy: sortByFields = 'pricePerKg' } = req.query
     // TODO: add validation for query params
     const offset = Number(req.query.offset || '0')
-    const limit = req.query.limit ? Number(req.query.limit) : null 
+    const limit = req.query.limit ? Number(req.query.limit) : null
 
-    const allGoods = await req.goodsService.getAll({ sortByFields })
+    const allGoods = req.goodsService.getAll({ sortByFields })
     const response = limit === null
         ? allGoods.slice(offset)
         : allGoods.slice(offset, offset + limit)
