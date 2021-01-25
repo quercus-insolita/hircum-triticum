@@ -1,15 +1,24 @@
 # Hircum triticum
+Даний сервіс є реалізацією тестового завдання для хакатону INT20H. Його задача - пошук найбільш доступної гречки в інтернет-магазинах з можливостями для
+впорядкування й фільтрації товару. Актуальна версія знаходиться за [адресою](http://194.104.21.169:29115/).
 
-Technical test for INT20H hackathon
+P.S. Назва **hircum-triticum** не є випадковою - пояснення знаходиться [тут](https://github.com/quercus-insolita/hircum-triticum/blob/master/media/understanding-product-name.mov).
 
-### Prerequisites
+## Збірка + запуск
+Для відлагодження проекту на власній машині необхідно мати встановленими такі засоби актуальних версій:
+- [docker](https://docs.docker.com/get-docker/) - засіб контейнеризації;
+- [docker-compose](https://docs.docker.com/compose/) - інструмент керування багатьма контейнерами;
+- [lets](https://lets-cli.org/) - CLI-раннер, програма для лаконічних широковживаних наборів команд.
 
-TBD
-
-### Installation
-
-TBD
-
-### Launching
-
-TBD
+Виконуємо наступну команду для локальної збірки образів docker:
+```shell
+$ lets build
+```
+А цією підіймаємо всю екосистему додатку:
+```shell
+$ lets run
+```
+Якщо потрібна довідка - виконайте дану директиву:
+```shell
+$ lets help
+```
