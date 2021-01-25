@@ -1,10 +1,10 @@
 .categoryGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  grid-template-columns: repeat(1, minmax(150px, 1fr));
   grid-gap: 20px;
 
   @media (min-width: 521px) {
-    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
   }
 
   @media (min-width: 768px) {
