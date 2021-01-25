@@ -9,3 +9,5 @@ export const GOODS_DATA_SOURCE_TIMEOUT = 10000
 export const APP_PORT = 29115
 
 export const COMBINED_LOGS_FILE_PATH = 'logs/api.log'
+
+export const POLLING_INTERVAL = 30000
