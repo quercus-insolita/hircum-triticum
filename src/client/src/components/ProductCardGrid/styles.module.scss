@@ -1,0 +1,35 @@
+.cardTitle {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 800 !important;
+  line-height: 24px;
+  height: 50px;
+  letter-spacing: 0.5px;
+  color: #223263;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  flex-grow: 0;
+  align-self: flex-start;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cardImg {
+  margin: 30px auto;
+  width: 150px !important;
+  height: 150px;
+}
+
+.cardBody {
+  background-color: #f6f6f6;
+}
+
+.cardPricing {
+  font-family: 'Poppins', sans-serif !important;
+  color: #40bfff;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  font-size: 18px;
+  text-align: center;
+}
