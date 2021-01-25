@@ -3,7 +3,7 @@ import * as queryString from 'query-string';
 import { IFetchArgs, IFetchArgsData } from 'models/fetch';
 
 const getFetchUrl = ({ endpoint, queryParams }: IFetchArgsData) => {
-  return `${process.env.REACT_APP_FILE_SERVER_URL}${endpoint}${
+  return `${endpoint}${
     queryParams ? `?${queryString.stringify(queryParams)}` : ''
   }`;
 };
