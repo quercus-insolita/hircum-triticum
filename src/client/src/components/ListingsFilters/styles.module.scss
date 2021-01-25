@@ -1,3 +1,5 @@
+@import 'styles/_variables.scss';
+
 .container {
   padding: 10px 20px;
   background-color: #f1f3f4;
@@ -24,7 +26,7 @@
     margin-right: 25px;
 
     .formGroupLabel {
-      color: #22262a;
+      color: $text-label-color;
       font-size: 16px;
       margin-right: 10px !important;
 
@@ -46,7 +48,7 @@
   }
 
   .formTotalItems {
-    color: #22262a;
+    color: $text-label-color;
     font-size: 16px;
   }
 }

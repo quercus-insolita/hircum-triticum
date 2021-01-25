@@ -36,13 +36,17 @@ const ListingsFilters: React.FC<IListingFilter> = ({
     [setFilters]
   );
 
+  const handleSubmit = event => {
+    event.preventDefault();
+  };
+
   useEffect(() => {
     updateFilter(filters);
   }, [updateFilter, filters]);
 
   return (
     <div className={styles.container}>
-      <Form className={styles.formContainer}>
+      <Form className={styles.formContainer} onSubmit={handleSubmit}>
         <div className={styles.formGroupContainer}>
           <p className={styles.formTotalItems}>{pluralizeString(totalItems, 'предмет', 'ів')}</p>
         </div>
