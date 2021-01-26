@@ -12,7 +12,7 @@ import (
 
 func NewFozzyParser() Parser {
 	return &fozzyParser{
-		&helper{&http.Client{Timeout: time.Second * 10}},
+		&helper{&http.Client{Timeout: time.Second * 15}},
 		regexp.MustCompile(`Фасовка: (\d+\*)?(\d+)(к?г)`),
 	}
 }
