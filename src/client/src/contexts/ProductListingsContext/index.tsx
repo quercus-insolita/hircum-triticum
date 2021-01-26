@@ -18,7 +18,7 @@ export const ProductListingsConsumer: React.Consumer<ProductListingsContextData>
 export const ProductListingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [viewType, setViewType] = useState<ViewType>(ViewType.GridView);
   const [filters, applyFilters] = useState<IListingFilters>({} as IListingFilters);
-  const { data, isLoading } = useFetch('/api/goods/listAll', {
+  const { data, isLoading } = useFetch('/_api/goods/listAll', {
     type: 'GET',
     dataType: 'jsonp'
   });
