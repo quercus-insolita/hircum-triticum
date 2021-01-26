@@ -41,7 +41,7 @@ services:
       - ./package.json:/app/package.json
       - ./tsconfig.json:/app/tsconfig.json
       - ./logs:/app/logs
-      - ./src:/app/src
+#      - ./src:/app/src
     build:
       context: .
       dockerfile: docker/dev/api.dockerfile
@@ -49,6 +49,10 @@ services:
     container_name: hircum-triticum-api
     ports:
       - 29115:29115
+    depends_on:
+      - parser-aquamarket
+      - parser-fozzy
+      - parser-auchan
 networks:
   default:
     name: hircum-triticum-default
