@@ -35,15 +35,16 @@ export class GoodsService {
     async update() {
         this.logger.info('start fetching latest goods from data sources and writing them to repo')
         const goods = await this.goodsAggregator.getGoodsBySources()
-        this.logger.info(`received goods from aggregator: ${JSON.stringify(goods)}`)
+        this.logger.info(`received goods from aggregator`)
 
         // TODO: use repo.bulkCreateAndUpdate()
         Object.entries(goods).forEach(([sourceId, goodsRecord]) => {
             if (goodsRecord.success) {
-                this.logger.info(`updating goods for source with sourceId=${sourceId}`)
                 this.goodsRepository.createOrUpdate(sourceId, goodsRecord.data)
             } else {
-                this.logger.error(goodsRecord.errorMessage)
+                this.logger.error(
+                    `failed to update goods for source with sourceId=${sourceId}: ${goodsRecord.errorMessage}`
+                )
             }
         })
     }

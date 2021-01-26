@@ -11,4 +11,4 @@ export type InternalGood = IncomingGood & {
 }
 export type GoodDataField = keyof InternalGood
 
-export type OutcomingGood = IncomingGood
+export type OutcomingGood = Pick<IncomingGood, keyof IncomingGood> // cloning to distinguish
