@@ -8,7 +8,7 @@ COPY package.json package.json
 COPY tsconfig.json tsconfig.json
 COPY src src
 
-RUN adduser -D -g "" api && npm install && npm run build
+RUN adduser -D -g "" api && npm install:all && npm run build
 
 ENV NODE_ENV production
 

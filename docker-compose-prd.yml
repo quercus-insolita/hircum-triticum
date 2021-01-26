@@ -33,11 +33,15 @@ services:
       dockerfile: docker/prd/api.dockerfile
     image: hircum-triticum-api
     container_name: hircum-triticum-api
-    command: node dist/index.js
+    command: npm start
     ports:
       - 29115:29115
     volumes:
       - ./logs:/app/logs
+    depends_on:
+      - parser-auchan
+      - parser-aquamarket
+      - parser-fozzy
 networks:
   default:
     name: hircum-triticum-default
