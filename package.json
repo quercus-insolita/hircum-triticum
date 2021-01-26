@@ -4,7 +4,18 @@
   "description": "INT20H technical test",
   "main": "index.ts",
   "scripts": {
-    "test": "jest || echo \"no tests as for now, we will add it for sure!\""
+    "install:all": "npm install && npm install --prefix src/client",
+    "compose:dev:build": "docker-compose -f docker-compose-dev.yml build",
+    "compose:dev:up": "docker-compose -f docker-compose-dev.yml up",
+    "start:dev": "npm run compose:dev:build && npm run compose:dev:up",
+    "build:server": "tsc",
+    "watch:server": "tsc --watch",
+    "build:client": "npm run --prefix src/client build",
+    "clean:build": "rm -rf dist src/client/build",
+    "clean": "rm -rf dist src/client/build node_modules",
+    "build": "npm run clean:build && npm run build:server && npm rebuild node-sass && npm run build:client",
+    "start": "node dist/index.js",
+    "test": "echo \"no tests as for now, we will add it for sure!\""
   },
   "repository": {
     "type": "git",
@@ -14,17 +25,26 @@
     "int20h",
     "hackaton"
   ],
-  "author": "Quercus Insolita team (Andrew Pavlenko <paavlenko.andrew@gmail.com>, Olha Yakymovych, Danylo Petrakivskyi",
-  "license": "UNLICENSED",
+  "author": "Quercus Insolita team (Andrew Pavlenko <paavlenko.andrew@gmail.com>, Olha Yakymovych<olha.yakymovych@gmail.com>, Danylo Petrakivskyi<danylopetrik@gmail.com>)",
   "bugs": {
     "url": "https://github.com/quercus-insolita/hircum-triticum/issues"
   },
   "homepage": "https://github.com/quercus-insolita/hircum-triticum#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "node-fetch": "^2.6.1",
+    "qs": "^6.9.6",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.9",
+    "@types/express": "^4.17.11",
+    "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.22",
+    "@types/node-fetch": "^2.5.8",
+    "@types/qs": "^6.9.5",
     "typescript": "^4.1.3"
   }
 }

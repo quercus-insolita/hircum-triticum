@@ -21,6 +21,27 @@ services:
     command: -parser aquamarket -port 29117 -log
     ports:
       - 29117:29117
+  parser-fozzy:
+    <<: *x-parser
+    container_name: hircum-triticum-parser-fozzy
+    command: -parser fozzy -port 29118 -log
+    ports:
+      - 29118:29118
+  api:
+    build:
+      context: .
+      dockerfile: docker/prd/api.dockerfile
+    image: hircum-triticum-api
+    container_name: hircum-triticum-api
+    command: npm start
+    ports:
+      - 29115:29115
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - parser-auchan
+      - parser-aquamarket
+      - parser-fozzy
 networks:
   default:
     name: hircum-triticum-default

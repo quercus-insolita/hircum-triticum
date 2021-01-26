@@ -11,11 +11,12 @@ COPY go.sum .
 COPY cmd cmd
 COPY internal internal
 
-RUN adduser -D -g "" parser && \
+RUN set -xe && \
+    adduser -D -g "" parser && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \
     apk update && \
-    apk add --no-cache git=2.30.0-r0 ca-certificates=20161130-r0 && \
+    apk add --no-cache git ca-certificates && \
     update-ca-certificates && \
     go get ./... && \
     mkdir -p bin && \

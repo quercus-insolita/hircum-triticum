@@ -10,25 +10,27 @@ import (
 	"time"
 )
 
-func MewAquamarketParser() Parser {
-	return &aquamarketParser{
-		&helper{&http.Client{Timeout: time.Second * 10}},
-		regexp.MustCompile(`^.*, (\d+ \* )?(\d+) (к?г)(\W.*)?$`),
+func NewFozzyParser() Parser {
+	return &fozzyParser{
+		&helper{&http.Client{Timeout: time.Second * 15}},
+		regexp.MustCompile(`Фасовка: (\d+\*)?(\d+)(к?г)`),
 	}
 }
 
-type aquamarketParser struct {
+type fozzyParser struct {
 	helper *helper
 	regexp *regexp.Regexp
 }
 
-func (p *aquamarketParser) ParseBuckwheats() ([]Buckwheat, error) {
-	document, err := p.helper.readDocument("https://aquamarket.ua/uk/1099-grechka")
+func (p *fozzyParser) ParseBuckwheats() ([]Buckwheat, error) {
+	document, err := p.helper.readDocument("https://fozzyshop.ua/300143-krupa-grechnevaya")
 	if err != nil {
 		return nil, err
 	}
 	buckwheats := make([]Buckwheat, 0)
-	selection := document.Find("div.product:not(.product-not-available)")
+	selection := document.Find(
+		"div#js-product-list div.js-product-miniature-wrapper:not(.product_grey)",
+	)
 	for i := range selection.Nodes {
 		if buckwheat, err := p.parseBuckwheat(selection.Eq(i)); err != nil {
 			log.WithField("url", buckwheat.URL).Error(err)
@@ -39,29 +41,24 @@ func (p *aquamarketParser) ParseBuckwheats() ([]Buckwheat, error) {
 	return buckwheats, nil
 }
 
-func (p *aquamarketParser) parseBuckwheat(selection *goquery.Selection) (Buckwheat, error) {
+func (p *fozzyParser) parseBuckwheat(selection *goquery.Selection) (Buckwheat, error) {
 	var (
 		buckwheat Buckwheat
 		err       error
 	)
-	for _, node := range selection.Find("a.product-name[href][title]").Nodes {
+	for _, node := range selection.Find("a.thumbnail").Nodes {
 		for _, attribute := range node.Attr {
 			if attribute.Key == "href" {
 				buckwheat.URL = attribute.Val
-			} else if attribute.Key == "title" {
-				buckwheat.Title = attribute.Val
 			}
 		}
 	}
 	if buckwheat.URL == "" {
 		return buckwheat, fmt.Errorf("parsing: parser found no url")
 	}
-	if buckwheat.Title == "" {
-		return buckwheat, fmt.Errorf("parsing: parser found no title")
-	}
-	for _, node := range selection.Find("div.thumb-list img[data-src]").Nodes {
+	for _, node := range selection.Find("img.product-thumbnail-first").Nodes {
 		for _, attribute := range node.Attr {
-			if attribute.Key == "data-src" {
+			if attribute.Key == "src" {
 				buckwheat.ImageURL = attribute.Val
 			}
 		}
@@ -69,8 +66,12 @@ func (p *aquamarketParser) parseBuckwheat(selection *goquery.Selection) (Buckwhe
 	if buckwheat.ImageURL == "" {
 		return buckwheat, fmt.Errorf("parsing: parser found no image url")
 	}
+	buckwheat.Title = selection.Find("div.product-title > a").Text()
+	if buckwheat.Title == "" {
+		return buckwheat, fmt.Errorf("parsing: parser found no title")
+	}
 	var price string
-	for _, node := range selection.Find("span.price.product-price[content]").Nodes {
+	for _, node := range selection.Find("span.product-price").Nodes {
 		for _, attribute := range node.Attr {
 			if attribute.Key == "content" {
 				price = attribute.Val
@@ -84,7 +85,9 @@ func (p *aquamarketParser) parseBuckwheat(selection *goquery.Selection) (Buckwhe
 	if buckwheat.Price <= 0 {
 		return buckwheat, fmt.Errorf("parsing: parser found non-positive price")
 	}
-	groups := p.regexp.FindStringSubmatch(buckwheat.Title)
+	groups := p.regexp.FindStringSubmatch(
+		selection.Find("div.product-reference > a").First().Text(),
+	)
 	buckwheat.Mass, err = strconv.ParseFloat(groups[2], 64)
 	if err != nil {
 		return buckwheat, fmt.Errorf("parsing: parser failed to parse right mass, %v", err)
@@ -93,7 +96,7 @@ func (p *aquamarketParser) parseBuckwheat(selection *goquery.Selection) (Buckwhe
 		return buckwheat, fmt.Errorf("parsing: parser found non-positive right mass")
 	}
 	if groups[1] != "" {
-		mass, err := strconv.ParseFloat(groups[1][:len(groups[1])-3], 64)
+		mass, err := strconv.ParseFloat(groups[1][:len(groups[1])-1], 64)
 		if err != nil {
 			return buckwheat, fmt.Errorf("parsing: parser failed to parse left mass, %v", err)
 		}

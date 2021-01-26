@@ -17,6 +17,7 @@ func main() {
 	parsers := map[string]parsing.Parser{
 		"auchan":     parsing.NewAuchanParser(),
 		"aquamarket": parsing.MewAquamarketParser(),
+		"fozzy":      parsing.NewFozzyParser(),
 	}
 	names := make([]string, 0, len(parsers))
 	for name := range parsers {
@@ -56,14 +57,14 @@ func main() {
 func handle(parser parsing.Parser) http.Handler {
 	return http.HandlerFunc(
 		func(writer http.ResponseWriter, _ *http.Request) {
-			writer.Header().Set("Content-Type", "application/json")
-			buckwheats, err := parser.ParseBuckwheats()
-			if err != nil {
-				buckwheats = make([]parsing.Buckwheat, 0)
+			if buckwheats, err := parser.ParseBuckwheats(); err != nil {
 				log.Error(err)
-			}
-			if err := json.NewEncoder(writer).Encode(buckwheats); err != nil {
+				writer.WriteHeader(http.StatusInternalServerError)
+			} else if err := json.NewEncoder(writer).Encode(buckwheats); err != nil {
 				log.Errorf("main: failed to handle, %v", err)
+				writer.WriteHeader(http.StatusInternalServerError)
+			} else {
+				writer.Header().Set("Content-Type", "application/json")
 			}
 		},
 	)

@@ -2,7 +2,7 @@ shell: bash
 commands:
   build:
     description: Compiles all docker images for local development
-    cmd: mkdir -p logs && docker-compose -f docker-compose-dev.yml build parser
+    cmd: mkdir -p logs && docker-compose -f docker-compose-dev.yml build parser api
   parser:
     description: Up site parser service
     cmd: |
@@ -11,5 +11,5 @@ commands:
   run:
     description: Activate the whole service ecosystem
     cmd: |
-      docker-compose -f docker-compose-dev.yml up parser-auchan parser-aquamarket
+      docker-compose -f docker-compose-dev.yml up parser-auchan parser-aquamarket parser-fozzy api
       docker-compose -f docker-compose-dev.yml down
