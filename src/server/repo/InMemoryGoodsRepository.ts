@@ -6,7 +6,7 @@ type SourceRecord<TGood> = {
     readonly goods: TGood[]
 }
 
-export class InMemoryGoodsRepository<TGood = IncomingGood> {
+export class InMemoryGoodsRepository<TGood extends IncomingGood = IncomingGood> {
     private readonly logger: Logger = createLogger({
         tenantId: 'polling-manager'
     })
@@ -14,10 +14,12 @@ export class InMemoryGoodsRepository<TGood = IncomingGood> {
     private lastUpdate: Date | null = null // the last time this.createOrUpdate or this.bulkCreateOrUpdate was called
 
     getLatestFlattened(): TGood[] {
-        return Object.values(this.goodsBySourceDict).reduce<TGood[]>(
-            (acc, { goods }) => [...acc, ...goods],
-            []
-        )
+        return Object.values(this.goodsBySourceDict)
+            .reduce<TGood[]>(
+                (acc, { goods }) => [...acc, ...goods],
+                []
+            )
+            .filter(({ name }) => !name.toLowerCase().includes('борошно'))
     }
 
     getLatest(): Record<string, TGood[]>
