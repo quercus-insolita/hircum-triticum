@@ -1,20 +1,19 @@
 .idea
-node_modules
 bin
 .lets
 logs
-dist
+dist/
 
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp/
 .pnp.js
 
 # testing
-/coverage
+coverage/
 
 # production
-/build
+build/
 
 # misc
 .DS_Store
@@ -23,6 +22,7 @@ dist
 .env.development.local
 .env.test.local
 .env.production.local
+.eslintcache
 
 npm-debug.log*
 yarn-debug.log*
