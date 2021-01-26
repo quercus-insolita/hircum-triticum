@@ -1,6 +1,6 @@
 export type IncomingGood = {
     price: number
-    name: string
+    title: string
     url: string
     mass: number
     imageUrl: string
