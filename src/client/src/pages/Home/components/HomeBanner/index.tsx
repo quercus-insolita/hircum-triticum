@@ -1,10 +1,15 @@
 import React from 'react';
 import { Jumbotron } from 'react-bootstrap';
 
+import styles from 'pages/Home/components/HomeBanner/styles.module.scss';
+
 const HomeBanner: React.FC = (): React.ReactElement => {
   return (
-    <Jumbotron>
-      <h2>home banner</h2>
+    <Jumbotron className={styles.jumbotron}>
+      <div>
+        <h2 className={styles.jumbotronTitle}>Онлайн список продуктів</h2>
+        <p className={styles.jumbotronSubTitle}>Скупляйся зараз!</p>
+      </div>
     </Jumbotron>
   );
 };

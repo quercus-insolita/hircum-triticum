@@ -1,0 +1,13 @@
+@import 'styles/_variables.scss';
+
+.jumbotron {
+  background-image: url('../../../../assets/images/groats.jpg');
+  background-size: cover;
+  box-shadow: 0 3px 10px $shadow-color;
+
+  .jumbotronTitle,
+  .jumbotronSubTitle {
+    color: $text-white-color;
+    font-weight: 800;
+  }
+}

@@ -15,7 +15,7 @@ const ProductCardGrid: React.FC<IProductCardGridProps> = ({
   const onClick = useCallback(() => window.open(url, '_blank'), [url]);
 
   return (
-    <Card onClick={onClick}>
+    <Card onClick={onClick} className={styles.cardContainer}>
       <Card.Img variant="top" src={imageURL} className={styles.cardImg} />
       <Card.Body className={styles.cardBody}>
         <Card.Title className={styles.cardTitle}>{title}</Card.Title>

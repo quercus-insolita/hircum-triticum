@@ -2,8 +2,10 @@
 
 .container {
   padding: 10px 20px;
-  background-color: #f1f3f4;
-  border-radius: 3px;
+  background-color: $background-color-neutral;
+  border: 1px solid $background-color-neutral;
+  box-shadow: 0 3px 5px $border-color;
+  border-radius: 0.3rem;
   margin-bottom: 25px;
 
   .formContainer {
@@ -38,6 +40,11 @@
     @media (max-width: 424px) {
       align-items: flex-start;
       flex-direction: column;
+    }
+
+    .formGroupControl {
+      background-color: $background-color-neutral;
+      border-color: $border-color;
     }
   }
 

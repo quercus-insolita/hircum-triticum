@@ -55,6 +55,7 @@ const ListingsFilters: React.FC<IListingFilter> = ({
           <Form.Control
             type="number"
             value={filters.priceFrom}
+            className={styles.formGroupControl}
             onChange={event => handleChange('priceFrom', event.target.value)}
           />
         </Form.Group>
@@ -64,6 +65,7 @@ const ListingsFilters: React.FC<IListingFilter> = ({
           <Form.Control
             as="select"
             value={filters.sortOrder}
+            className={styles.formGroupControl}
             onChange={event => handleChange('sortOrder', event.target.value)}
           >
             <option value="">Обрати...</option>
