@@ -6,6 +6,7 @@ import { filterProductListings } from 'utils/filtering.utils';
 
 import { ProductListingsContextData } from 'contexts/ProductListingsContext/types';
 import { IListingFilters } from 'models/filter';
+import { ViewType } from 'models/view';
 
 export const ProductListingsContext = createContext<ProductListingsContextData>(
   {} as ProductListingsContextData
@@ -15,6 +16,7 @@ export const ProductListingsConsumer: React.Consumer<ProductListingsContextData>
   ProductListingsContext.Consumer;
 
 export const ProductListingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [viewType, setViewType] = useState<ViewType>(ViewType.GridView);
   const [filters, applyFilters] = useState<IListingFilters>({} as IListingFilters);
   const { data, isLoading } = useFetch('/api/goods/listAll', {
     type: 'GET',
@@ -25,7 +27,8 @@ export const ProductListingsProvider: React.FC<{ children: React.ReactNode }> = 
     () => ({
       updateFilter: (appliedFilters: IListingFilters) => {
         applyFilters(appliedFilters);
-      }
+      },
+      updateViewType: (view: ViewType) => setViewType(view)
     }),
     []
   );
@@ -33,7 +36,9 @@ export const ProductListingsProvider: React.FC<{ children: React.ReactNode }> = 
   const filteredData = filterProductListings(data, filters);
 
   return (
-    <ProductListingsContext.Provider value={{ data, filteredData, ...productListingsContext }}>
+    <ProductListingsContext.Provider
+      value={{ data, filteredData, viewType, ...productListingsContext }}
+    >
       <LoaderWrapper loading={isLoading}>{children}</LoaderWrapper>
     </ProductListingsContext.Provider>
   );

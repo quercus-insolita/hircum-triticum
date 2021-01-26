@@ -13,10 +13,15 @@ const Home: React.FC = (): React.ReactElement => {
 
       <ProductListingsProvider>
         <ProductListingsConsumer>
-          {({ data, filteredData, updateFilter }) => (
+          {({ data, filteredData, viewType, updateFilter, updateViewType }) => (
             <>
-              <ListingsFilters updateFilter={updateFilter} totalItems={data.length} />
-              <HomeProductListings listings={filteredData} />
+              <ListingsFilters
+                updateFilter={updateFilter}
+                totalItems={data.length}
+                viewType={viewType}
+                updateViewType={updateViewType}
+              />
+              <HomeProductListings listings={filteredData} viewType={viewType} />
             </>
           )}
         </ProductListingsConsumer>
