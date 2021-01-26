@@ -27,6 +27,7 @@ const Paginator: React.FC<IPaginatorProps> = ({
           key={number}
           onClick={() => changePageHandler(number)}
           active={number === currentPage}
+          className={styles.paginationItem}
         >
           {number}
         </Pagination.Item>
@@ -41,29 +42,37 @@ const Paginator: React.FC<IPaginatorProps> = ({
   } else {
     if (currentPage <= 3) {
       items = getItems(1, 4);
-      items.push(<Pagination.Ellipsis />);
+      items.push(<Pagination.Ellipsis className={styles.paginationItem} />);
       items = items.concat(getItems(totalPages, totalPages));
     } else if (currentPage > 3 && currentPage < totalPages - 3) {
       items = getItems(1, 1);
-      items.push(<Pagination.Ellipsis />);
+      items.push(<Pagination.Ellipsis className={styles.paginationItem} />);
       items = items.concat(getItems(currentPage - 1, currentPage - 1));
       items = items.concat(getItems(currentPage, currentPage));
       items = items.concat(getItems(currentPage + 1, currentPage + 1));
-      items.push(<Pagination.Ellipsis />);
+      items.push(<Pagination.Ellipsis className={styles.paginationItem} />);
       items = items.concat(getItems(totalPages, totalPages));
     } else {
       items = getItems(1, 1);
-      items.push(<Pagination.Ellipsis />);
+      items.push(<Pagination.Ellipsis className={styles.paginationItem} />);
       items = items.concat(getItems(totalPages - 3, totalPages));
     }
   }
 
   return (
     <Pagination>
-      {currentPage > 1 && <Pagination.Prev onClick={() => changePageHandler(currentPage - 1)} />}
+      {currentPage > 1 && (
+        <Pagination.Prev
+          onClick={() => changePageHandler(currentPage - 1)}
+          className={styles.paginationItem}
+        />
+      )}
       {items}
       {currentPage < totalPages && (
-        <Pagination.Next onClick={() => changePageHandler(currentPage + 1)} />
+        <Pagination.Next
+          onClick={() => changePageHandler(currentPage + 1)}
+          className={styles.paginationItem}
+        />
       )}
     </Pagination>
   );

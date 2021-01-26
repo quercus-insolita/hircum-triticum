@@ -12,13 +12,20 @@ export const ProductListingsContext = createContext<ProductListingsContextData>(
   {} as ProductListingsContextData
 );
 
-export const ProductListingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ProductListingsProvider: React.FC<{
+  children: React.ReactNode;
+  reloaded: boolean;
+}> = ({ children, reloaded }) => {
   const [viewType, setViewType] = useState<ViewType>(ViewType.GridView);
   const [filters, applyFilters] = useState<IListingFilters>({} as IListingFilters);
-  const { data, isLoading } = useFetch('/_api/goods/listAll', {
-    type: 'GET',
-    dataType: 'jsonp'
-  });
+
+  const { data, isLoading } = useFetch(
+    `/_api/goods/listAll${reloaded ? '?forceUpdate=true' : ''}`,
+    {
+      type: 'GET',
+      dataType: 'jsonp'
+    }
+  );
 
   const productListingsContext = useMemo(
     () => ({

@@ -5,11 +5,15 @@ import HomeBanner from 'pages/Home/components/HomeBanner';
 import HomeProductListingsContainer from 'pages/Home/containers/HomeProductListingsContainer';
 import { ProductListingsProvider } from 'contexts/ProductListingsContext';
 
-const Home: React.FC = (): React.ReactElement => {
+interface IHomeProps {
+  reloaded: boolean;
+}
+
+const Home: React.FC<IHomeProps> = ({ reloaded }): React.ReactElement => {
   return (
     <Container className="mt-2 mb-4">
       <HomeBanner />
-      <ProductListingsProvider>
+      <ProductListingsProvider reloaded={reloaded}>
         <HomeProductListingsContainer />
       </ProductListingsProvider>
     </Container>
