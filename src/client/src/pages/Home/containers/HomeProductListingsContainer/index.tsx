@@ -8,6 +8,8 @@ import usePagination from 'hooks/usePagination';
 
 import { IListingFilters } from 'models/filter';
 
+import styles from 'pages/Home/containers/HomeProductListingsContainer/styles.module.scss';
+
 const HomeProductListingsContainer: React.FC = (): React.ReactElement => {
   const { data, filteredData, viewType, updateFilter, updateViewType } = useProductListings();
   const {
@@ -37,11 +39,13 @@ const HomeProductListingsContainer: React.FC = (): React.ReactElement => {
       />
       <HomeProductListings listings={currentListings} viewType={viewType} />
       {nextEnabled && (
-        <Paginator
-          totalPages={totalPages}
-          currentPage={currentPage}
-          changePageHandler={handlePageChange}
-        />
+        <div className={styles.paginatorContainer}>
+          <Paginator
+            totalPages={totalPages}
+            currentPage={currentPage}
+            changePageHandler={handlePageChange}
+          />
+        </div>
       )}
     </div>
   );

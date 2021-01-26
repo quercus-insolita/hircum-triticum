@@ -3,6 +3,8 @@ import { Pagination } from 'react-bootstrap';
 
 import { IBindingCallback1 } from 'models/callback';
 
+import styles from 'components/Paginator/styles.module.scss';
+
 interface IPaginatorProps {
   totalPages: number;
   currentPage: number;
