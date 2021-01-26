@@ -1,9 +1,9 @@
 export type IncomingGood = {
     price: number
-    name: string
+    title: string
     url: string
     mass: number
-    imageUrl: string
+    imageURL: string
 }
 
 export type InternalGood = IncomingGood & {
