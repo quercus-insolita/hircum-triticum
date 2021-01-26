@@ -3,7 +3,7 @@ export type IncomingGood = {
     title: string
     url: string
     mass: number
-    imageUrl: string
+    imageURL: string
 }
 
 export type InternalGood = IncomingGood & {
