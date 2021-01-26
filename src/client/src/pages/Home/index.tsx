@@ -8,7 +8,7 @@ import { ProductListingsProvider, ProductListingsConsumer } from 'contexts/Produ
 
 const Home: React.FC = (): React.ReactElement => {
   return (
-    <Container className="mt-4 mb-4">
+    <Container className="mt-2 mb-4">
       <HomeBanner />
 
       <ProductListingsProvider>

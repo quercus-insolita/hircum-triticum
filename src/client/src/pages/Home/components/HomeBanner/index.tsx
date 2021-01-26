@@ -8,7 +8,7 @@ const HomeBanner: React.FC = (): React.ReactElement => {
     <Jumbotron className={styles.jumbotron}>
       <div>
         <h2 className={styles.jumbotronTitle}>Онлайн список продуктів</h2>
-        <p className={styles.jumbotronSubTitle}>Скупляйся зараз!</p>
+        <p className={styles.jumbotronSubTitle}>Замовляй зараз!</p>
       </div>
     </Jumbotron>
   );

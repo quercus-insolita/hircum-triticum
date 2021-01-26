@@ -10,6 +10,16 @@
     margin: 0 10px;
   }
 
+  .cardBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cardBodyContainer {
+    margin-bottom: 20px;
+  }
+
   .cardImg {
     transition: transform 0.3s;
     width: 110px !important;
@@ -17,6 +27,7 @@
   }
 
   .cardTitle {
+    margin-bottom: 3px !important;
     font-weight: 800 !important;
     line-height: 24px;
     letter-spacing: 0.5px;
@@ -41,9 +52,27 @@
   @media (min-width: 768px) {
     flex-direction: row !important;
 
+    .cardBody {
+      align-items: flex-start;
+    }
+
     .cardTitle,
     .cardPricing {
       text-align: left;
+    }
+  }
+
+  .cardBodyButton {
+    font-size: 14px;
+    color: $button-text-primary-color;
+    background-color: $button-primary-color;
+    border-color: $button-primary-color;
+    transition: all 0.3s !important;
+
+    .cardBodyButtonIcon {
+      margin-right: 8px;
+      margin-bottom: 2px;
+      align-self: center;
     }
   }
 }

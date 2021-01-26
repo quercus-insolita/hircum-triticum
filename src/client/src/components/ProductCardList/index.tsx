@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
+
+import { ShoppingCartIcon } from 'components/icons';
 
 import { IProduct } from 'models/product';
 
@@ -10,7 +12,7 @@ interface IProductCardListProps {
 }
 
 const ProductCardList: React.FC<IProductCardListProps> = ({
-  listing: { title, price, imageURL, url }
+  listing: { title, price, imageURL, url, mass }
 }): React.ReactElement => {
   const onClick = useCallback(() => window.open(url, '_blank'), [url]);
 
@@ -21,8 +23,14 @@ const ProductCardList: React.FC<IProductCardListProps> = ({
           <Card.Img src={imageURL} className={styles.cardImg} />
         </div>
         <Card.Body className={styles.cardBody}>
-          <Card.Title className={styles.cardTitle}>{title}</Card.Title>
-          <Card.Text className={styles.cardPricing}>{price} UAH</Card.Text>
+          <div className={styles.cardBodyContainer}>
+            <Card.Title className={styles.cardTitle}>{title}</Card.Title>
+            <Card.Text className={styles.cardPricing}>{price} UAH / {mass} кг</Card.Text>
+          </div>
+          <Button onClick={onClick} className={styles.cardBodyButton}>
+            <ShoppingCartIcon size={13} className={styles.cardBodyButtonIcon} />
+            Купити
+          </Button>
         </Card.Body>
       </Card>
       <div className={styles.divider} />
