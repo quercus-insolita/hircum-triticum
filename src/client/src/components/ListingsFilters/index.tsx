@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, memo } from 'react';
 import { Form } from 'react-bootstrap';
 import map from 'lodash/map';
 
@@ -91,4 +91,9 @@ const ListingsFilters: React.FC<IListingFilter> = ({
   );
 };
 
-export default ListingsFilters;
+const areEqual = (
+  { totalItems: prevTotalItems, viewType: prevViewType },
+  { totalItems, viewType }
+) => prevTotalItems === totalItems && prevViewType === viewType;
+
+export default memo(ListingsFilters, areEqual);

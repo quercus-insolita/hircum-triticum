@@ -20,7 +20,7 @@ const ProductCardGrid: React.FC<IProductCardGridProps> = ({
       <Card.Body className={styles.cardBody}>
         <Card.Title className={styles.cardTitle}>{title}</Card.Title>
         <Card.Text className={styles.cardPricing}>
-          {price} UAH / {mass} кг
+          {price} грн / {mass} кг
         </Card.Text>
       </Card.Body>
     </Card>
