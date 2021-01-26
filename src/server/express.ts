@@ -6,12 +6,21 @@ import * as path from 'path'
 import { router as apiRouter } from './routers/api'
 import { createAppContext } from './context'
 import { InMemoryGoodsRepository } from './repo/InMemoryGoodsRepository'
+import { createLogger, Logger } from './infra/logger'
 
 export const createExpressApp = (goodsRepository: InMemoryGoodsRepository) => {
+  const logger: Logger = createLogger({
+      tenantId: 'express app'
+  })
+
   const app = express()
   app.set('query parser', (queryString: string) => parse(queryString, {
     comma: true
   }))
+  app.use((req, _res, next) => {
+      logger.info('received request', { url: req.originalUrl })
+      next()
+  })
 
   app.use(cors())
   app.use(express.json())

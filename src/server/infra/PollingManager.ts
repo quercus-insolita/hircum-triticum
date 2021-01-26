@@ -38,9 +38,7 @@ export class PollingManager {
                 )
             }
 
-            this.logger.info('start updating service')
             await this.goodsService.update()
-            this.logger.info('updated service')
 
             this.logger.info(`scheduling next update with ${POLLING_INTERVAL}ms timeout`)
             setTimeout(() => this.scheduleStaleGoodsUpdates(), POLLING_INTERVAL)
