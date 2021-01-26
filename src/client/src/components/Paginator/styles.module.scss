@@ -1,0 +1,11 @@
+@import 'styles/_variables.scss';
+
+:global(.page-link) {
+  color: $text-color !important;
+}
+
+:global(.page-item.active .page-link) {
+  color: $text-white-color !important;
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+}

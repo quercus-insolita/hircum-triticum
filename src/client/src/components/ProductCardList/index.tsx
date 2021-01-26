@@ -25,7 +25,7 @@ const ProductCardList: React.FC<IProductCardListProps> = ({
         <Card.Body className={styles.cardBody}>
           <div className={styles.cardBodyContainer}>
             <Card.Title className={styles.cardTitle}>{title}</Card.Title>
-            <Card.Text className={styles.cardPricing}>{price} UAH / {mass} кг</Card.Text>
+            <Card.Text className={styles.cardPricing}>{price} грн / {mass} кг</Card.Text>
           </div>
           <Button onClick={onClick} className={styles.cardBodyButton}>
             <ShoppingCartIcon size={13} className={styles.cardBodyButtonIcon} />
