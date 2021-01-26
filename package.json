@@ -4,15 +4,17 @@
   "description": "INT20H technical test",
   "main": "index.ts",
   "scripts": {
+    "install:all": "npm install && npm install --prefix src/client",
     "compose:dev:build": "docker-compose -f docker-compose-dev.yml build",
     "compose:dev:up": "docker-compose -f docker-compose-dev.yml up",
     "start:dev": "npm run compose:dev:build && npm run compose:dev:up",
     "build:server": "tsc",
     "watch:server": "tsc --watch",
-    "clean:build": "rm -rf dist",
-    "clean": "rm -rf dist node_modules",
-    "build": "npm run clean:build && npm run build:server",
-    "start": "npm run build && node dist/index.js",
+    "build:client": "npm run --prefix src/client build",
+    "clean:build": "rm -rf dist src/client/build",
+    "clean": "rm -rf dist src/client/build node_modules",
+    "build": "npm run clean:build && npm run build:server && npm rebuild node-sass && npm run build:client",
+    "start": "node dist/index.js",
     "test": "echo \"no tests as for now, we will add it for sure!\""
   },
   "repository": {

@@ -5,5 +5,6 @@ README.md
 LICENSE
 lets.yaml
 node_modules
+src/client/node_modules
 bin
 logs
