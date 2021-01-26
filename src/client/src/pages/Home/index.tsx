@@ -8,15 +8,20 @@ import { ProductListingsProvider, ProductListingsConsumer } from 'contexts/Produ
 
 const Home: React.FC = (): React.ReactElement => {
   return (
-    <Container className="mt-4 mb-4">
+    <Container className="mt-2 mb-4">
       <HomeBanner />
 
       <ProductListingsProvider>
         <ProductListingsConsumer>
-          {({ data, filteredData, updateFilter }) => (
+          {({ data, filteredData, viewType, updateFilter, updateViewType }) => (
             <>
-              <ListingsFilters updateFilter={updateFilter} totalItems={data.length} />
-              <HomeProductListings listings={filteredData} />
+              <ListingsFilters
+                updateFilter={updateFilter}
+                totalItems={data.length}
+                viewType={viewType}
+                updateViewType={updateViewType}
+              />
+              <HomeProductListings listings={filteredData} viewType={viewType} />
             </>
           )}
         </ProductListingsConsumer>

@@ -10,16 +10,18 @@ interface IProductCardGridProps {
 }
 
 const ProductCardGrid: React.FC<IProductCardGridProps> = ({
-  listing: { title, price, imageURL, url }
+  listing: { title, price, imageURL, url, mass }
 }): React.ReactElement => {
   const onClick = useCallback(() => window.open(url, '_blank'), [url]);
 
   return (
-    <Card onClick={onClick}>
+    <Card onClick={onClick} className={styles.cardContainer}>
       <Card.Img variant="top" src={imageURL} className={styles.cardImg} />
       <Card.Body className={styles.cardBody}>
         <Card.Title className={styles.cardTitle}>{title}</Card.Title>
-        <Card.Text className={styles.cardPricing}>{price} UAH</Card.Text>
+        <Card.Text className={styles.cardPricing}>
+          {price} UAH / {mass} кг
+        </Card.Text>
       </Card.Body>
     </Card>
   );

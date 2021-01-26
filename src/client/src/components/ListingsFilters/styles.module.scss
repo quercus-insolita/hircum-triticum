@@ -2,9 +2,13 @@
 
 .container {
   padding: 10px 20px;
-  background-color: #f1f3f4;
-  border-radius: 3px;
-  margin-bottom: 25px;
+  background-color: $background-color-neutral;
+  border: 1px solid $background-color-neutral;
+  box-shadow: 0 3px 5px $border-color;
+  border-radius: 0.3rem;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
 
   .formContainer {
     display: flex;
@@ -12,6 +16,7 @@
   }
 
   @media (max-width: 1023px) {
+    flex-direction: column;
     padding: 20px;
 
     .formContainer {
@@ -31,6 +36,7 @@
       margin-right: 10px !important;
 
       @media (max-width: 1023px) {
+        margin-bottom: 10px !important;
         width: 100px;
       }
     }
@@ -39,11 +45,14 @@
       align-items: flex-start;
       flex-direction: column;
     }
-  }
 
-  .formGroupContainer:not(:last-child) {
     @media (max-width: 1023px) {
       margin-bottom: 10px !important;
+    }
+
+    .formGroupControl {
+      background-color: $background-color-neutral;
+      border-color: $border-color;
     }
   }
 
@@ -58,5 +67,5 @@
 }
 
 :global(.form-control) {
-  width: 250px !important;
+  width: 225px !important;
 }
