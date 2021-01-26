@@ -25,10 +25,10 @@ export const ProductListingsProvider: React.FC<{ children: React.ReactNode }> = 
 
   const productListingsContext = useMemo(
     () => ({
-      updateFilter: (appliedFilters: IListingFilters) => {
+      updateFilter: (appliedFilters: IListingFilters): void => {
         applyFilters(appliedFilters);
       },
-      updateViewType: (view: ViewType) => setViewType(view)
+      updateViewType: (view: ViewType): void => setViewType(view)
     }),
     []
   );
